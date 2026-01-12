@@ -4,6 +4,7 @@
   --breakpoint-md: 744px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1440px;
+  --font-serif: var(--font-serif);
 }
 
 :root {

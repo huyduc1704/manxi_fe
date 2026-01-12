@@ -214,8 +214,7 @@ const Header = () => {
                 placement="right"
                 onClose={() => setMobileMenuOpen(false)}
                 open={mobileMenuOpen}
-                styles={{ body: { padding: 0 } }}
-                width={300}
+                styles={{ body: { padding: 0 }, wrapper: { width: 300 } }}
             >
                 <ConfigProvider
                     theme={{
