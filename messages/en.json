@@ -1,0 +1,39 @@
+{
+    "Header": {
+        "home": "Home",
+        "about": "About",
+        "services": "Service",
+        "gallery": "Gallery",
+        "contact": "Contact",
+        "bookAppointment": "Book Appointment"
+    },
+    "Hero": {
+        "subtitle": "Make your body fit with us",
+        "title": "DO REGULAR FOR\nYOUR COMFORT",
+        "cta": "Book Appointment",
+        "placeholder": "Hero Image (Spa Illustration)"
+    },
+    "Footer": {
+        "slogan": "Your relaxation journey simplified. Make your body fit with us.",
+        "contact": "Contact",
+        "services": "Services",
+        "serviceList": {
+            "fullPackage": "Full Package",
+            "bodyRelax": "Body Relaxation",
+            "hairCare": "Hair & Scalp Care"
+        },
+        "support": "Support",
+        "address": "Address"
+    },
+    "Common": {
+        "loading": "Loading..."
+    },
+    "ConnectSection": {
+        "title": "Connect with Manxi",
+        "subtitle": "Follow us on social media for the latest updates and special offers",
+        "social": "Social Media",
+        "hotline": "Hotline",
+        "followUs": "Follow Us",
+        "contactUs": "Contact Us"
+    }
+}

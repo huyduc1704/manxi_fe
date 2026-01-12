@@ -1,0 +1,39 @@
+{
+    "Header": {
+        "home": "TRANG CHỦ",
+        "about": "VỀ MANXI",
+        "services": "DỊCH VỤ",
+        "gallery": "THƯ VIỆN",
+        "contact": "LIÊN HỆ",
+        "bookAppointment": "ĐẶT LỊCH NGAY"
+    },
+    "Hero": {
+        "subtitle": "Chăm sóc sức khỏe cùng Manxi",
+        "title": "THƯ GIÃN TUYỆT ĐỐI\nCHO CƠ THỂ BẠN",
+        "cta": "Đặt lịch ngay",
+        "placeholder": "Ảnh Hero (Minh họa Spa)"
+    },
+    "Footer": {
+        "slogan": "Hành trình thư giãn của bạn. Chăm sóc cơ thể cùng Manxi Spa.",
+        "contact": "Liên hệ",
+        "services": "Dịch vụ",
+        "serviceList": {
+            "fullPackage": "Trọn gói",
+            "bodyRelax": "Thư giãn toàn thân",
+            "hairCare": "Chăm sóc tóc và da đầu"
+        },
+        "support": "Hỗ trợ",
+        "address": "Địa chỉ"
+    },
+    "Common": {
+        "loading": "Đang tải..."
+    },
+    "ConnectSection": {
+        "title": "Kết nối với Manxi",
+        "subtitle": "Theo dõi chúng tôi để cập nhật những ưu đãi hấp dẫn nhất",
+        "social": "Mạng xã hội",
+        "hotline": "Hotline",
+        "followUs": "Theo dõi",
+        "contactUs": "Liên hệ ngay"
+    }
+}
