@@ -6,12 +6,25 @@ import { routing } from '@/i18n/routing';
 import AppLayout from '@/components/layout/AppLayout';
 import { Playfair_Display } from 'next/font/google';
 import '../globals.css';
+import { Metadata } from 'next';
 
 const playfair = Playfair_Display({
     subsets: ['latin', 'vietnamese'],
     display: 'swap',
     variable: '--font-serif',
 });
+
+export const metadata: Metadata = {
+    title: {
+        template: '%s | Manxi Spa',
+        default: 'Manxi Spa - Gội Đầu Dưỡng Sinh Chuẩn Đài Loan',
+    },
+    description: 'Góc nhỏ chữa lành tại Hóc Môn. Trải nghiệm quy trình gội đầu và massage chuẩn Đài Loan.',
+    icons: {
+        icon: '/icon.png',
+    },
+};
+
 
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }));
@@ -31,8 +44,6 @@ export default async function LocaleLayout({
         notFound();
     }
 
-    // Providing all messages to the client
-    // side is the easiest way to get started
     const messages = await getMessages();
 
     return (
