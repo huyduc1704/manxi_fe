@@ -5,6 +5,7 @@ import { Layout, Menu, Button, ConfigProvider } from 'antd';
 import { usePathname, useRouter, Link } from '@/i18n/routing';
 import Image from 'next/image';
 import { useTranslations, useLocale } from 'next-intl';
+import { useAuth } from '@/contexts/AuthContext';
 
 import { getServiceCategories, ServiceCategory } from '@/lib/api';
 
@@ -17,6 +18,7 @@ const Header = () => {
     const pathname = usePathname();
     const router = useRouter();
     const locale = useLocale();
+    const { user, isAuthenticated, logout } = useAuth();
 
     const [isScrolled, setIsScrolled] = React.useState(false);
     const [isHovered, setIsHovered] = React.useState(false);
@@ -36,6 +38,39 @@ const Header = () => {
 
         // Fetch categories for menu
         getServiceCategories().then(data => setCategories(data));
+        
+        // Initialize liquid-gl
+        let glassEffect: any;
+        const initGlass = async () => {
+            try {
+                const liquidGL = (await import('liquid-gl')).default;
+                glassEffect = liquidGL({
+                    target: '.header-glass',
+                    snapshot: 'body',
+                    resolution: 1.5,
+                    refraction: 0.05,
+                    bevelDepth: 0.05,
+                    bevelWidth: 0.1,
+                    frost: 2,
+                    reveal: 'fade',
+                });
+                
+                // Đồng bộ scroll cho liquidGL để cập nhật vị trí khúc xạ đúng
+                if (typeof liquidGL.syncWith === 'function') {
+                    liquidGL.syncWith({ gsap: false });
+                    console.log("liquidGL syncWith called successfully");
+                } else {
+                    console.error("liquidGL.syncWith is not available!");
+                }
+            } catch (err) {
+                console.error("Failed to init liquidGL", err);
+            }
+        };
+        
+        if (typeof window !== 'undefined') {
+            // Slight delay to ensure DOM is fully painted
+            setTimeout(initGlass, 500);
+        }
 
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
@@ -55,6 +90,7 @@ const Header = () => {
                 )
             })) : undefined
         },
+        { key: '/blog', label: t('blog') },
         { key: '/gallery', label: t('gallery') },
         { key: '/contact', label: t('contact') },
     ];
@@ -88,21 +124,20 @@ const Header = () => {
             <div
                 className="header-glass"
                 style={{
+                    position: 'fixed',
+                    top: '5px',
+                    left: '24px',
+                    right: '24px',
+                    margin: '0 auto',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    width: '100%',
+                    width: 'auto',
                     maxWidth: '1700px',
-                    background: 'rgba(255, 255, 255, 0.4)',
-                    backdropFilter: 'blur(10px) saturate(300%)',
-                    WebkitBackdropFilter: 'blur(10px) saturate(300%)',
+                    background: 'transparent',
                     borderRadius: '50px',
                     padding: '10px 30px',
-                    boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    opacity: isVisible ? 1 : 0,
-                    transition: 'all 0.3s ease-in-out',
-                    transform: isVisible ? 'translateY(0)' : 'translateY(-10px)',
+                    opacity: 1,
                     pointerEvents: 'auto',
                 }}
             >
@@ -170,33 +205,69 @@ const Header = () => {
                     />
                 </div>
 
-                {/* Language Selector (Desktop) - Hidden on Mobile to save space */}
-                <div className="hidden md:flex items-center gap-2">
-                    <Button
-                        type="text"
-                        shape="circle"
-                        style={{
-                            fontWeight: locale === 'vi' ? 700 : 400,
-                            color: locale === 'vi' ? '#333' : '#999',
-                            pointerEvents: 'auto'
-                        }}
-                        onClick={() => switchLocale('vi')}
-                    >
-                        VN
-                    </Button>
-                    <span style={{ color: '#ccc' }}>|</span>
-                    <Button
-                        type="text"
-                        shape="circle"
-                        style={{
-                            fontWeight: locale === 'en' ? 700 : 400,
-                            color: locale === 'en' ? '#333' : '#999',
-                            pointerEvents: 'auto'
-                        }}
-                        onClick={() => switchLocale('en')}
-                    >
-                        EN
-                    </Button>
+                <div className="hidden md:flex items-center gap-4">
+                    {/* Auth Section */}
+                    {isAuthenticated && user ? (
+                        <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/profile')}>
+                            <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 relative">
+                                <Image
+                                    src={user.avatar || '/images/default-avatar.png'}
+                                    alt="User"
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </div>
+                            <span className="text-sm font-semibold text-gray-700 hidden lg:block">{user.fullName}</span>
+                        </div>
+                    ) : (
+                        <Button
+                            type="text"
+                            style={{ fontWeight: 600, color: '#6D5B4B' }}
+                            onClick={() => {
+                                // Redirect to Zalo Login
+                                const appId = '841380323232713552';
+                                const redirectUri = typeof window !== 'undefined' ? `${window.location.origin}/auth/zalo-callback` : '';
+                                window.location.href = `https://oauth.zalo.me/v4/permission?app_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=manxi_login`;
+                            }}
+                        >
+                            Đăng nhập
+                        </Button>
+                    )}
+
+                    <Link href="/booking">
+                        <Button type="primary" shape="round" style={{ backgroundColor: '#6D5B4B', borderColor: '#6D5B4B' }}>
+                            {t('bookAppointment')}
+                        </Button>
+                    </Link>
+
+                    {/* Language Selector (Desktop) - Hidden on Mobile to save space */}
+                    <div className="flex items-center gap-2">
+                        <Button
+                            type="text"
+                            shape="circle"
+                            style={{
+                                fontWeight: locale === 'vi' ? 700 : 400,
+                                color: locale === 'vi' ? '#333' : '#999',
+                                pointerEvents: 'auto'
+                            }}
+                            onClick={() => switchLocale('vi')}
+                        >
+                            VN
+                        </Button>
+                        <span style={{ color: '#ccc' }}>|</span>
+                        <Button
+                            type="text"
+                            shape="circle"
+                            style={{
+                                fontWeight: locale === 'en' ? 700 : 400,
+                                color: locale === 'en' ? '#333' : '#999',
+                                pointerEvents: 'auto'
+                            }}
+                            onClick={() => switchLocale('en')}
+                        >
+                            EN
+                        </Button>
+                    </div>
                 </div>
             </div>
 
@@ -205,7 +276,12 @@ const Header = () => {
                 title={
                     <div className="flex justify-between items-center w-full">
                         <Image src="/logo_manxi.svg" alt="Manxi Logo" width={100} height={35} />
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 items-center">
+                            <Link href="/booking" onClick={() => setMobileMenuOpen(false)}>
+                                <Button size="small" type="primary" style={{ backgroundColor: '#6D5B4B', borderColor: '#6D5B4B' }}>
+                                    {t('bookAppointment')}
+                                </Button>
+                            </Link>
                             <Button size="small" type={locale === 'vi' ? 'primary' : 'default'} onClick={() => switchLocale('vi')}>VN</Button>
                             <Button size="small" type={locale === 'en' ? 'primary' : 'default'} onClick={() => switchLocale('en')}>EN</Button>
                         </div>

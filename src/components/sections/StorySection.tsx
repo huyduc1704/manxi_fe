@@ -3,59 +3,22 @@
 import React from 'react';
 import { Typography, Button, Card } from 'antd';
 import Image from 'next/image';
+import { Link } from '@/i18n/routing';
 
 const { Title, Text } = Typography;
 
-const STORIES = [
-    {
-        id: 1,
-        category: 'DỊCH VỤ CỦA MANXI',
-        date: '12/04/2025',
-        title: 'Massage – Đưa Năng Lượng Trở Về Lại Dòng Chảy',
-        image: '/space2.png',
-        aspectRatio: '3/4', // Tall
-    },
-    {
-        id: 2,
-        category: 'GÓC NHỎ MANXI',
-        date: '11/04/2025',
-        title: 'Hồn Spa – Trong Từng Chi Tiết Nhỏ',
-        image: '/space2.png',
-        aspectRatio: '4/3', // Wide
-    },
-    {
-        id: 3,
-        category: 'GÓC NHỎ MANXI',
-        date: '11/04/2025',
-        title: 'Như Mạch Dẫn Dịu Dàng',
-        image: '/space2.png',
-        aspectRatio: '1/1', // Square
-    },
-    {
-        id: 4,
-        category: 'GÓC NHỎ MANXI',
-        date: '11/04/2025',
-        title: 'Một Trải Nghiệm Riêng, Một Khoảnh Khắc Cho Mình\nĐắm chìm vào không gian yên tĩnh.', // Longer text
-        image: '/space2.png',
-        aspectRatio: '3/5', // Very Tall
-    },
-    {
-        id: 5,
-        category: 'KIẾN THỨC SPA',
-        date: '10/04/2025',
-        title: 'Lợi Ích Của Gội Đầu Dưỡng Sinh',
-        image: '/space2.png',
-        aspectRatio: '3/2', // Wide
-    },
-    {
-        id: 6,
-        category: 'LIFESTYLE',
-        date: '09/04/2025',
-        title: 'Sống Chậm Lại Giữa Sài Gòn Hoa Lệ',
-        image: '/space2.png',
-        aspectRatio: '3/4',
-    }
-];
+import { BLOGS } from '@/data/blogs';
+
+const ASPECT_RATIOS = ['3/4', '4/3', '1/1', '3/5', '3/2', '3/4'];
+
+const STORIES = BLOGS.slice(0, 6).map((blog, index) => ({
+    id: Number(blog.id), // Convert string id to number if necessary for key, or keep as is. Original was number.
+    category: 'GÓC NHỎ MẠN KHÊ',
+    date: blog.date,
+    title: blog.title,
+    image: blog.thumbnail,
+    aspectRatio: ASPECT_RATIOS[index] || '3/4',
+}));
 
 const StorySection = () => {
     return (
@@ -162,23 +125,25 @@ const StorySection = () => {
                 </div>
 
                 <div style={{ textAlign: 'center', marginTop: '50px' }}>
-                    <Button
-                        type="primary"
-                        style={{
-                            backgroundColor: '#6D5B4B',
-                            borderColor: '#6D5B4B',
-                            color: '#fff',
-                            textTransform: 'uppercase',
-                            fontSize: '12px',
-                            fontWeight: 600,
-                            letterSpacing: '1px',
-                            height: '40px',
-                            padding: '0 30px',
-                            borderRadius: '0'
-                        }}
-                    >
-                        Xem tất cả
-                    </Button>
+                    <Link href="/blog">
+                        <Button
+                            type="primary"
+                            style={{
+                                backgroundColor: '#6D5B4B',
+                                borderColor: '#6D5B4B',
+                                color: '#fff',
+                                textTransform: 'uppercase',
+                                fontSize: '12px',
+                                fontWeight: 600,
+                                letterSpacing: '1px',
+                                height: '40px',
+                                padding: '0 30px',
+                                borderRadius: '0'
+                            }}
+                        >
+                            Xem tất cả
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </section>

@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: '*.zadn.vn', // Cho phép tất cả subdomain của Zalo (s120, s240, ...)
+      },
     ],
   },
 };

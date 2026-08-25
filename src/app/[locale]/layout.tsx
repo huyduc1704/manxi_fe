@@ -7,6 +7,7 @@ import AppLayout from '@/components/layout/AppLayout';
 import { Playfair_Display } from 'next/font/google';
 import '../globals.css';
 import { Metadata } from 'next';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 const playfair = Playfair_Display({
     subsets: ['latin', 'vietnamese'],
@@ -50,9 +51,11 @@ export default async function LocaleLayout({
         <html lang={locale}>
             <body className={`${playfair.variable} antialiased`}>
                 <NextIntlClientProvider messages={messages}>
-                    <AppLayout>
-                        {children}
-                    </AppLayout>
+                    <AuthProvider>
+                        <AppLayout>
+                            {children}
+                        </AppLayout>
+                    </AuthProvider>
                 </NextIntlClientProvider>
             </body>
         </html>

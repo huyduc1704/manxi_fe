@@ -5,6 +5,7 @@
         "services": "DỊCH VỤ",
         "gallery": "THƯ VIỆN",
         "contact": "LIÊN HỆ",
+        "blog": "GÓC NHỎ MẠN KHÊ",
         "bookAppointment": "ĐẶT LỊCH NGAY"
     },
     "Hero": {
@@ -35,5 +36,54 @@
         "hotline": "Hotline",
         "followUs": "Theo dõi",
         "contactUs": "Liên hệ ngay"
+    },
+    "BookingForm": {
+        "steps": {
+            "selectServices": "Chọn Dịch Vụ",
+            "dateTime": "Ngày & Giờ",
+            "yourDetails": "Thông Tin Của Bạn",
+            "confirm": "Xác Nhận"
+        },
+        "services": {
+            "duration": "phút"
+        },
+        "dateTime": {
+            "selectDate": "Chọn Ngày",
+            "selectTime": "Chọn Giờ",
+            "requiredDate": "Vui lòng chọn ngày",
+            "requiredTime": "Vui lòng chọn giờ"
+        },
+        "details": {
+            "fullName": "Họ và Tên",
+            "phone": "Số Điện Thoại",
+            "email": "Email (Không bắt buộc)",
+            "note": "Ghi chú (Không bắt buộc)",
+            "notePlaceholder": "Bạn có yêu cầu đặc biệt gì không?",
+            "requiredName": "Vui lòng nhập họ tên",
+            "requiredPhone": "Vui lòng nhập số điện thoại",
+            "invalidPhone": "Số điện thoại không hợp lệ"
+        },
+        "summary": {
+            "title": "Thông Tin Đặt Lịch",
+            "dateTime": "Thời Gian",
+            "selectedServices": "DỊCH VỤ ĐÃ CHỌN",
+            "totalEstimated": "Tổng Dự Kiến",
+            "customer": "Khách Hàng"
+        },
+        "buttons": {
+            "previous": "Quay Lại",
+            "next": "Tiếp Tục",
+            "confirm": "Xác Nhận Đặt Lịch"
+        },
+        "messages": {
+            "success": "Đặt lịch thành công!",
+            "error_load": "Không thể tải danh sách dịch vụ",
+            "service_required": "Vui lòng chọn ít nhất một dịch vụ",
+            "create_error": "Có lỗi xảy ra khi tạo lịch"
+        }
+    },
+    "BookingPage": {
+        "title": "Đặt Lịch Hẹn",
+        "subtitle": "Chọn dịch vụ và thời gian bạn muốn, chúng tôi sẽ lo phần còn lại."
     }
 }

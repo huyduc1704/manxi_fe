@@ -60,12 +60,15 @@ export default function ServicesPage() {
 
     // 3. Logic Lọc & Tab
     const filteredServices = selectedCategorySlug
-        ? services.filter(s => s.category?.slug === selectedCategorySlug)
+        ? services.filter(s => (s.category?.slug || s.categorySlug) === selectedCategorySlug)
         : services;
 
     const handleTabChange = (key: string) => {
-        if (key === 'all') router.push(pathname);
-        else router.push(`${pathname}?category=${key}`);
+        if (key === 'all') {
+            router.replace(pathname, { scroll: false });
+        } else {
+            router.replace(`${pathname}?category=${key}`, { scroll: false });
+        }
     };
 
     // 4. Custom Icon

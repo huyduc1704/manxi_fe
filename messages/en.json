@@ -5,6 +5,7 @@
         "services": "Service",
         "gallery": "Gallery",
         "contact": "Contact",
+        "blog": "Our Stories",
         "bookAppointment": "Book Appointment"
     },
     "Hero": {

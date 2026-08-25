@@ -7,6 +7,7 @@ export interface Service {
     duration: number; // in minutes
     images?: string[];
     category?: any;
+    categorySlug?: string;
     slug?: string;
 }
 
@@ -54,5 +55,41 @@ export async function getServiceCategories(): Promise<ServiceCategory[]> {
     } catch (error) {
         console.error('Error fetching categories:', error);
         return [];
+    }
+}
+
+export interface CreateBookingDto {
+    bookingType: 'GUEST' | 'MEMBER';
+    guestInfo?: {
+        fullName: string;
+        phone: string;
+        email?: string;
+    };
+    serviceIds: string[];
+    bookingDate: string; // ISO Date String
+    bookingTime: string; // HH:mm
+    customerNote?: string;
+    paymentMethod?: string;
+}
+
+export async function createBooking(data: CreateBookingDto): Promise<any> {
+    try {
+        const res = await fetch(`${API_URL}/bookings`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.message || 'Failed to create booking');
+        }
+
+        return await res.json();
+    } catch (error) {
+        console.error('Error creating booking:', error);
+        throw error;
     }
 }
