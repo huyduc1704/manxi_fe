@@ -38,39 +38,6 @@ const Header = () => {
 
         // Fetch categories for menu
         getServiceCategories().then(data => setCategories(data));
-        
-        // Initialize liquid-gl
-        let glassEffect: any;
-        const initGlass = async () => {
-            try {
-                const liquidGL = (await import('liquid-gl')).default;
-                glassEffect = liquidGL({
-                    target: '.header-glass',
-                    snapshot: 'body',
-                    resolution: 1.5,
-                    refraction: 0.05,
-                    bevelDepth: 0.05,
-                    bevelWidth: 0.1,
-                    frost: 2,
-                    reveal: 'fade',
-                });
-                
-                // Đồng bộ scroll cho liquidGL để cập nhật vị trí khúc xạ đúng
-                if (typeof liquidGL.syncWith === 'function') {
-                    liquidGL.syncWith({ gsap: false });
-                    console.log("liquidGL syncWith called successfully");
-                } else {
-                    console.error("liquidGL.syncWith is not available!");
-                }
-            } catch (err) {
-                console.error("Failed to init liquidGL", err);
-            }
-        };
-        
-        if (typeof window !== 'undefined') {
-            // Slight delay to ensure DOM is fully painted
-            setTimeout(initGlass, 500);
-        }
 
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
@@ -100,15 +67,13 @@ const Header = () => {
         setMobileMenuOpen(false);
     };
 
-    // Show header if scrolled OR hovered
-    const isVisible = isScrolled || isHovered || mobileMenuOpen;
-
     return (
         <AntHeader
             style={{
                 position: 'fixed',
-                top: 5,
-                zIndex: 100,
+                top: 10,
+                left: 0,
+                right: 0,
                 width: '100%',
                 background: 'transparent',
                 display: 'flex',
@@ -117,160 +82,163 @@ const Header = () => {
                 height: 'auto',
                 lineHeight: 'normal',
                 pointerEvents: 'none',
+                zIndex: 1000,
             }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
             <div
-                className="header-glass"
                 style={{
-                    position: 'fixed',
-                    top: '5px',
-                    left: '24px',
-                    right: '24px',
-                    margin: '0 auto',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    width: 'auto',
+                    position: 'relative',
+                    width: '100%',
                     maxWidth: '1700px',
-                    background: 'transparent',
+                    background: isScrolled ? 'rgba(255, 255, 255, 0.88)' : 'rgba(255, 255, 255, 0.7)',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255, 255, 255, 0.65)',
+                    boxShadow: isScrolled
+                        ? '0 12px 32px -4px rgba(109, 91, 75, 0.15), 0 2px 6px 0 rgba(0, 0, 0, 0.04)'
+                        : '0 8px 24px -4px rgba(109, 91, 75, 0.08)',
                     borderRadius: '50px',
                     padding: '10px 30px',
-                    opacity: 1,
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     pointerEvents: 'auto',
                 }}
             >
-                {/* Logo Section */}
-                <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
-                    <Image
-                        src="/logo_manxi.svg"
-                        alt="Manxi Spa Logo"
-                        width={120}
-                        height={40}
-                        style={{ width: '120px', height: 'auto' }}
-                        priority
-                    />
-                </Link>
-
-                {/* DESKTOP MENU - Hidden on Mobile */}
-                <div className="hidden md:flex flex-1 justify-center">
-                    <ConfigProvider
-                        theme={{
-                            token: {
-                                colorPrimary: '#6D5B4B',
-                            },
-                            components: {
-                                Menu: {
-                                    itemColor: '#333',
-                                    itemSelectedColor: '#6D5B4B',
-                                    itemHoverColor: '#6D5B4B',
-                                    horizontalItemSelectedColor: '#6D5B4B',
-                                    horizontalItemHoverColor: '#6D5B4B',
-                                },
-                            },
-                        }}
-                    >
-                        <Menu
-                            mode="horizontal"
-                            selectedKeys={[pathname]}
-                            items={menuItems.map((item) => ({
-                                key: item.key,
-                                label: (
-                                    <Link href={item.key} style={{ fontSize: '15px', fontWeight: 500, color: 'inherit' }}>
-                                        {item.label}
-                                    </Link>
-                                ),
-                                children: item.children,
-                                popupClassName: "glass-dropdown"
-                            }))}
-                            style={{
-                                flex: 1,
-                                justifyContent: 'center',
-                                borderBottom: 'none',
-                                background: 'transparent',
-                                minWidth: 0,
-                                margin: '0 20px',
-                            }}
+                <div
+                    style={{
+                        position: 'relative',
+                        zIndex: 10,
+                        pointerEvents: 'auto',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                    }}
+                >
+                    <Link href="/" style={{ display: 'flex', alignItems: 'center', pointerEvents: 'auto' }}>
+                        <Image
+                            src="/logo_manxi.svg"
+                            alt="Manxi Spa Logo"
+                            width={120}
+                            height={40}
+                            style={{ width: '120px', height: 'auto' }}
+                            priority
                         />
-                    </ConfigProvider>
-                </div>
-
-                {/* MOBILE HAMBURGER - Visible only on Mobile */}
-                <div className="md:hidden">
-                    <Button
-                        type="text"
-                        icon={<MenuOutlined style={{ fontSize: '20px', color: '#6D5B4B' }} />}
-                        onClick={() => setMobileMenuOpen(true)}
-                    />
-                </div>
-
-                <div className="hidden md:flex items-center gap-4">
-                    {/* Auth Section */}
-                    {isAuthenticated && user ? (
-                        <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/profile')}>
-                            <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 relative">
-                                <Image
-                                    src={user.avatar || '/images/default-avatar.png'}
-                                    alt="User"
-                                    fill
-                                    style={{ objectFit: 'cover' }}
-                                />
-                            </div>
-                            <span className="text-sm font-semibold text-gray-700 hidden lg:block">{user.fullName}</span>
-                        </div>
-                    ) : (
-                        <Button
-                            type="text"
-                            style={{ fontWeight: 600, color: '#6D5B4B' }}
-                            onClick={() => {
-                                // Redirect to Zalo Login
-                                const appId = '841380323232713552';
-                                const redirectUri = typeof window !== 'undefined' ? `${window.location.origin}/auth/zalo-callback` : '';
-                                window.location.href = `https://oauth.zalo.me/v4/permission?app_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=manxi_login`;
-                            }}
-                        >
-                            Đăng nhập
-                        </Button>
-                    )}
-
-                    <Link href="/booking">
-                        <Button type="primary" shape="round" style={{ backgroundColor: '#6D5B4B', borderColor: '#6D5B4B' }}>
-                            {t('bookAppointment')}
-                        </Button>
                     </Link>
-
-                    {/* Language Selector (Desktop) - Hidden on Mobile to save space */}
-                    <div className="flex items-center gap-2">
+                    <div className="hidden md:flex flex-1 justify-center" style={{ pointerEvents: 'auto' }}>
+                        <ConfigProvider
+                            theme={{
+                                token: {
+                                    colorPrimary: '#6D5B4B',
+                                },
+                                components: {
+                                    Menu: {
+                                        itemColor: '#333',
+                                        itemSelectedColor: '#6D5B4B',
+                                        itemHoverColor: '#6D5B4B',
+                                        horizontalItemSelectedColor: '#6D5B4B',
+                                        horizontalItemHoverColor: '#6D5B4B',
+                                    },
+                                },
+                            }}
+                        >
+                            <Menu
+                                mode="horizontal"
+                                selectedKeys={[pathname]}
+                                items={menuItems.map((item) => ({
+                                    key: item.key,
+                                    label: (
+                                        <Link href={item.key} style={{ fontSize: '15px', fontWeight: 500, color: 'inherit' }}>
+                                            {item.label}
+                                        </Link>
+                                    ),
+                                    children: item.children,
+                                    popupClassName: "glass-dropdown"
+                                }))}
+                                style={{
+                                    flex: 1,
+                                    justifyContent: 'center',
+                                    borderBottom: 'none',
+                                    background: 'transparent',
+                                    minWidth: 0,
+                                    margin: '0 20px',
+                                }}
+                            />
+                        </ConfigProvider>
+                    </div>
+                    {/* MOBILE HAMBURGER - Visible only on Mobile */}
+                    <div className="md:hidden" style={{ pointerEvents: 'auto' }}>
                         <Button
                             type="text"
-                            shape="circle"
-                            style={{
-                                fontWeight: locale === 'vi' ? 700 : 400,
-                                color: locale === 'vi' ? '#333' : '#999',
-                                pointerEvents: 'auto'
-                            }}
-                            onClick={() => switchLocale('vi')}
-                        >
-                            VN
-                        </Button>
-                        <span style={{ color: '#ccc' }}>|</span>
-                        <Button
-                            type="text"
-                            shape="circle"
-                            style={{
-                                fontWeight: locale === 'en' ? 700 : 400,
-                                color: locale === 'en' ? '#333' : '#999',
-                                pointerEvents: 'auto'
-                            }}
-                            onClick={() => switchLocale('en')}
-                        >
-                            EN
-                        </Button>
+                            icon={<MenuOutlined style={{ fontSize: '20px', color: '#6D5B4B' }} />}
+                            onClick={() => setMobileMenuOpen(true)}
+                        />
+                    </div>
+                    <div className="hidden md:flex items-center gap-4" style={{ pointerEvents: 'auto' }}>
+                        {/* Auth Section */}
+                        {isAuthenticated && user ? (
+                            <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/profile')}>
+                                <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 relative">
+                                    <Image
+                                        src={user.avatar || '/images/default-avatar.png'}
+                                        alt="User"
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                    />
+                                </div>
+                                <span className="text-sm font-semibold text-gray-700 hidden lg:block">{user.fullName}</span>
+                            </div>
+                        ) : (
+                            <Button
+                                type="text"
+                                style={{ fontWeight: 600, color: '#6D5B4B' }}
+                                onClick={() => {
+                                    // Redirect to Zalo Login
+                                    const appId = '841380323232713552';
+                                    const redirectUri = typeof window !== 'undefined' ? `${window.location.origin}/auth/zalo-callback` : '';
+                                    window.location.href = `https://oauth.zalo.me/v4/permission?app_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=manxi_login`;
+                                }}
+                            >
+                                Đăng nhập
+                            </Button>
+                        )}
+                        <Link href="/booking">
+                            <Button type="primary" shape="round" style={{ backgroundColor: '#6D5B4B', borderColor: '#6D5B4B' }}>
+                                {t('bookAppointment')}
+                            </Button>
+                        </Link>
+                        {/* Language Selector (Desktop) */}
+                        <div className="flex items-center gap-2">
+                            <Button
+                                type="text"
+                                shape="circle"
+                                style={{
+                                    fontWeight: locale === 'vi' ? 700 : 400,
+                                    color: locale === 'vi' ? '#333' : '#999',
+                                    pointerEvents: 'auto'
+                                }}
+                                onClick={() => switchLocale('vi')}
+                            >
+                                VN
+                            </Button>
+                            <span style={{ color: '#ccc' }}>|</span>
+                            <Button
+                                type="text"
+                                shape="circle"
+                                style={{
+                                    fontWeight: locale === 'en' ? 700 : 400,
+                                    color: locale === 'en' ? '#333' : '#999',
+                                    pointerEvents: 'auto'
+                                }}
+                                onClick={() => switchLocale('en')}
+                            >
+                                EN
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
-
             {/* MOBILE DRAWER */}
             <Drawer
                 title={
