@@ -28,7 +28,9 @@ export default function ZaloCallbackPage() {
             isProcessed.current = true; // Đánh dấu đã xử lý ngay lập tức
 
             // Gọi Backend để đổi Code lấy Token
-            fetch('http://localhost:8080/auth/zalo-login-web', {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+            fetch(`${apiUrl}/auth/zalo-login-web`, {
+
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

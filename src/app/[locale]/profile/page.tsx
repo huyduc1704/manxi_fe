@@ -26,6 +26,7 @@ export default function ProfilePage() {
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [loadingBookings, setLoadingBookings] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
     // Form state
     const [formData, setFormData] = useState({
@@ -52,7 +53,7 @@ export default function ProfilePage() {
     const fetchMyBookings = async () => {
         try {
             const token = localStorage.getItem('manxi_token');
-            const res = await fetch('http://localhost:8080/bookings/my-bookings', {
+            const res = await fetch(`${apiUrl}/bookings/my-bookings`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -69,7 +70,7 @@ export default function ProfilePage() {
     const handleUpdateProfile = async () => {
         try {
             const token = localStorage.getItem('manxi_token');
-            const res = await fetch('http://localhost:8080/users/me', {
+            const res = await fetch(`${apiUrl}/users/me`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
